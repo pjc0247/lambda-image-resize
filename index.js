@@ -9,12 +9,6 @@ const im = require('imagemagick')
     , debug = true; // Turn off debug flag on production mode
 
 const BaseUrl = "";
-const UserLambdaHost = "unq1g3g289.execute-api.ap-northeast-2.amazonaws.com";
-const SetProfileImagePath = "";
-
-var uid = "";
-var key = "";
-var rotation = 0;
 
 if (!debug) {
     console.log = () => {};
@@ -90,47 +84,6 @@ function putObject(params) {
     return Promise.all(tasks);
 }
 
-function requestApplyDB(params) {
-    console.log("requestApplyDB() params", params);
-    
-    if (uid == null)
-        return new Promise((resolve, reject) => {
-           resolve(params); 
-        });
-    
-    return new Promise((resolve, reject) => {
-        var post_options = {
-          host: UserLambdaHost,
-          port: '443',
-          path: SetProfileImagePath,
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          }
-        };
-    
-        var post_req = http.request(post_options, function(res) {
-            var body = "";
-            res.setEncoding('utf8');
-            res.on('data', function (chunk) {
-                body += chunk;
-            });
-            res.on('end', function () {
-                resolve(JSON.parse(body));
-            });
-        });
-    
-        post_req.write(JSON.stringify({
-                "uid": uid,
-                "rotation": rotation,
-                "credential": "zhuzhu300",
-                "profile_image": BaseUrl + key.replace('.jpg', '_thumbnail.jpg'),
-                "profile_image_large": BaseUrl + key.replace('.jpg', '_large.jpg')
-            }));
-        post_req.end();
-    });
-}
-
 exports.handler = (event, context, callback) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
     
@@ -152,7 +105,7 @@ exports.handler = (event, context, callback) => {
                 'headers': {},
                 'body': JSON.stringify({
                     "result" : {
-                        "large_url": BaseUrl + params.Key.replace('.jpg', '_thumbnail.jpg'),
+                        "large_url": BaseUrl + params.Key,
                         "thumbnail_url": BaseUrl + params.Key.replace('.jpg', '_large.jpg')
                     }
                 })});
