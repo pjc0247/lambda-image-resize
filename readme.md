@@ -8,4 +8,7 @@ Uses `sharp` image library which is significantly faster than `image-magick`.<br
 
 Setup
 ----
+
+![img](img.png)<br>
+
 I also included the `npm_modules` directory. So you can download the whole repository by `.zip` and use it directly.
